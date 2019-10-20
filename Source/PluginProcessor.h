@@ -16,15 +16,14 @@
 //==============================================================================
 /**
 */
-class DelayPluginAudioProcessor  : public AudioProcessor, public AudioProcessorValueTreeState::Listener
+
+
+class DelayPluginAudioProcessor  : public AudioProcessor
 {
 public:
     //==============================================================================
     DelayPluginAudioProcessor();
     ~DelayPluginAudioProcessor();
-
-   
-    void parameterChanged (const String &parameterID, float newValue) override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -81,8 +80,10 @@ private:
     int mSampleRate;
     
     BasicDelay mSimpleDelay;
-    LinearSmoothedValue<float> timeSmoothed;
+    StringRef DRY_WET_PARAM = "dry_wet";
+    
     float* timeAmount;
+    float* dryWetAmount;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayPluginAudioProcessor)
 };

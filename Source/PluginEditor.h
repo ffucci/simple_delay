@@ -32,14 +32,14 @@ public:
     
     using slider_attachment_t = std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment>;
     
-    slider_attachment_t feedbackAmountValue,delayTimeValue;
+    slider_attachment_t feedbackAmountValue, delayTimeValue, dryWetValue;
     
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     DelayPluginAudioProcessor& processor;
 
-    Slider feedbackAmountSlider, delayTimeSlider;
+    Slider feedbackAmountSlider, delayTimeSlider, dryWetSlider;
     
     OpenGLContext m_glContext;
     

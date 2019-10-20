@@ -26,14 +26,17 @@ DelayPluginAudioProcessorEditor::DelayPluginAudioProcessorEditor (DelayPluginAud
     
     createSlider(feedbackAmountSlider, {0.0,1.0},0.1);
     createSlider(delayTimeSlider, {0.0,1000.0},200.0);
+    createSlider(dryWetSlider, {0.0, 1.0},0.0f);
 
     feedbackAmountValue = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "feedback", feedbackAmountSlider);
-     delayTimeValue = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "time", delayTimeSlider);
+    delayTimeValue = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "time", delayTimeSlider);
+    dryWetValue = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree,"dry_wet", dryWetSlider);
     
     m_glContext.setComponentPaintingEnabled(true);
     m_glContext.attachTo(*this);
     feedbackAmountSlider.setSkewFactor(0.3f);
-    delayTimeSlider.setSkewFactor(100.0f);
+    delayTimeSlider.setSkewFactor(150.0f);
+    dryWetSlider.setSkewFactor(0.1f);
     setSize (700, 400);
 
 }
@@ -72,5 +75,6 @@ void DelayPluginAudioProcessorEditor::resized()
     preGain->setBounds(194, 181, 396, 134);
     feedbackAmountSlider.setBounds (30, 90, 70, 70);
     delayTimeSlider.setBounds (30, 150, 70, 70);
+    dryWetSlider.setBounds (30, 210, 70, 70);
 
 }

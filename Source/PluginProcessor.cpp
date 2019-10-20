@@ -26,7 +26,7 @@ DelayPluginAudioProcessor::DelayPluginAudioProcessor()
 {
     //tree.addParameterListener("time",this);
     timeAmount = tree.getRawParameterValue("time");
-
+    dryWetAmount = tree.getRawParameterValue("dry_wet");
 }
 
 DelayPluginAudioProcessor::~DelayPluginAudioProcessor()
@@ -104,8 +104,6 @@ void DelayPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     const int numInputChannels = getTotalNumInputChannels();
     const int delayBufferSize = 2* (sampleRate + samplesPerBlock);
         
-    //timeSmoothed.reset (sampleRate, smoothTime);
-    //.reset (sampleRate, smoothTime);
     mSampleRate = sampleRate;
     mDelayBuffer.setSize(numInputChannels, delayBufferSize, false, true ,true);
     mDelayBuffer.clear();
@@ -145,17 +143,16 @@ bool DelayPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 }
 #endif
 
-void DelayPluginAudioProcessor::parameterChanged(const String &parameterID, float newValue){
-    
-}
 
 AudioProcessorValueTreeState::ParameterLayout DelayPluginAudioProcessor::getParameterLayout(){
     std::vector<std::unique_ptr<RangedAudioParameter>> params;
     auto feedBackAmountParamter = std::make_unique<AudioParameterFloat>("feedback","Feedback",0.0, 1.0f,0.3f);
     auto delayTimeParameter = std::make_unique<AudioParameterFloat>("time","Time",0.0, 1000.0f,300.0f);
+    auto dryWetParameter = std::make_unique<AudioParameterFloat>("dry_wet","Dry/Wet",0.0f, 1.0f, 0.3f);
+    
     params.push_back(std::move(feedBackAmountParamter));
     params.push_back(std::move(delayTimeParameter));
-
+    params.push_back(std::move(dryWetParameter));
     return {params.begin(),params.end()};
 }
 
@@ -178,12 +175,12 @@ void DelayPluginAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     //const int delayBufferLength = mDelayBuffer.getNumSamples();
     float* feedbackAmount = tree.getRawParameterValue("feedback");
     //float timeAmount = *tree.getRawParameterValue("time");
-    
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         //String amount(timeAmount);
         //Logger::outputDebugString(amount);
-        mSimpleDelay.processBlock<LinearInterpolation>(channel, buffer, timeAmount, feedbackAmount);
+        mSimpleDelay.processBlock<LinearInterpolation>(channel, buffer, timeAmount, dryWetAmount,feedbackAmount);
     }
     
     mSimpleDelay.updatePosition(bufferLength);
